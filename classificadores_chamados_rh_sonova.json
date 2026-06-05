@@ -1,0 +1,568 @@
+{
+  "versao": "v5_glossario_classificadores",
+  "regra_sla": "abertura + 2 dias",
+  "classificadores": [
+    {
+      "id": "acesso_adp",
+      "label": "Acesso / Sistema ADP",
+      "group": "Sistema",
+      "priority": 100,
+      "description": "Bloqueio, senha, login, acesso ao ADP/eXpert, portal ou erro de entrada no sistema.",
+      "strongTerms": [
+        "bloqueei",
+        "bloqueado",
+        "bloqueada",
+        "desbloquear",
+        "desbloqueio",
+        "senha",
+        "login",
+        "nao entra",
+        "não entra",
+        "acesso",
+        "acessar",
+        "adp",
+        "expert",
+        "portal"
+      ],
+      "contextTerms": [
+        "folha de pagamento",
+        "sistema",
+        "plataforma",
+        "entrar",
+        "erro",
+        "usuario",
+        "usuário"
+      ],
+      "negativeTerms": [
+        "informe de rendimentos",
+        "irrf",
+        "malha fina",
+        "declaração de ir",
+        "declaracao de ir"
+      ],
+      "examples": [
+        "Bloqueei meu acesso do ADP",
+        "Alterei a senha e não entra",
+        "Preciso desbloquear meu acesso ao portal ADP"
+      ]
+    },
+    {
+      "id": "ferias_adp",
+      "label": "Férias / ADP",
+      "group": "Folha e jornada",
+      "priority": 90,
+      "description": "Solicitações sobre programação, agendamento, saldo, aviso ou recibo de férias, inclusive erro na plataforma ADP.",
+      "strongTerms": [
+        "ferias",
+        "férias",
+        "programar ferias",
+        "programar férias",
+        "agendamento das minhas ferias",
+        "agendamento das minhas férias",
+        "recibo de ferias",
+        "recibo de férias",
+        "saldo de ferias",
+        "saldo de férias"
+      ],
+      "contextTerms": [
+        "adp",
+        "plataforma",
+        "periodo",
+        "período",
+        "gozo",
+        "abono",
+        "10 dias",
+        "20 dias"
+      ],
+      "negativeTerms": [],
+      "examples": [
+        "Não consigo programar minhas férias no ADP",
+        "Tirei férias em dois períodos",
+        "Preciso consultar saldo de férias"
+      ]
+    },
+    {
+      "id": "irrf_informe",
+      "label": "IRRF / Informe de rendimentos",
+      "group": "Fiscal e declarações",
+      "priority": 88,
+      "description": "Dúvidas sobre informe de rendimentos, IRRF, declaração de imposto de renda, divergência no pré-preenchido e malha fina.",
+      "strongTerms": [
+        "irrf",
+        "imposto de renda",
+        "informe de rendimentos",
+        "informe",
+        "rendimentos",
+        "declaração",
+        "declaracao",
+        "malha fina",
+        "gov",
+        "pré-preenchido",
+        "pre-preenchido"
+      ],
+      "contextTerms": [
+        "valor",
+        "total de rendimentos",
+        "empresa",
+        "fonte pagadora",
+        "receita"
+      ],
+      "negativeTerms": [
+        "bloqueado",
+        "bloqueada",
+        "senha",
+        "login",
+        "não entra",
+        "nao entra"
+      ],
+      "examples": [
+        "Meu informe está divergente do GOV",
+        "Preciso do informe de rendimentos",
+        "Dúvida sobre IRRF"
+      ]
+    },
+    {
+      "id": "folha_holerite",
+      "label": "Folha / Holerite / Pagamento",
+      "group": "Folha e jornada",
+      "priority": 82,
+      "description": "Dúvidas sobre salário, holerite, pagamento, descontos, reembolso, valores pagos ou não pagos.",
+      "strongTerms": [
+        "folha",
+        "holerite",
+        "olerite",
+        "pagamento",
+        "salario",
+        "salário",
+        "desconto",
+        "descontado",
+        "cobrança",
+        "cobranca",
+        "reembolso",
+        "valor pago",
+        "não recebi",
+        "nao recebi"
+      ],
+      "contextTerms": [
+        "competencia",
+        "competência",
+        "verba",
+        "líquido",
+        "liquido",
+        "adiantamento",
+        "13º",
+        "decimo terceiro"
+      ],
+      "negativeTerms": [
+        "bloqueado",
+        "bloqueada",
+        "senha",
+        "login"
+      ],
+      "examples": [
+        "Desconto indevido no holerite",
+        "Não recebi pagamento",
+        "Dúvida sobre folha de pagamento"
+      ]
+    },
+    {
+      "id": "ponto_banco_horas",
+      "label": "Ponto / Banco de horas",
+      "group": "Folha e jornada",
+      "priority": 80,
+      "description": "Ajustes, dúvidas ou correções de ponto, faltas, atrasos, horas extras e banco de horas.",
+      "strongTerms": [
+        "ponto",
+        "espelho de ponto",
+        "banco de horas",
+        "hora extra",
+        "horas extras",
+        "atraso",
+        "falta",
+        "justificativa",
+        "marcação",
+        "marcacao",
+        "batida"
+      ],
+      "contextTerms": [
+        "jornada",
+        "abono",
+        "registro",
+        "entrada",
+        "saida",
+        "saída"
+      ],
+      "negativeTerms": [],
+      "examples": [
+        "Preciso corrigir meu ponto",
+        "Dúvida sobre banco de horas",
+        "Falta não abonada"
+      ]
+    },
+    {
+      "id": "dependentes_cadastro_familiar",
+      "label": "Dependentes / Cadastro familiar",
+      "group": "Cadastro",
+      "priority": 78,
+      "description": "Inclusão, exclusão ou alteração de dependentes e dados familiares para benefícios, IR, saúde ou seguro.",
+      "strongTerms": [
+        "dependente",
+        "dependentes",
+        "filha",
+        "filho",
+        "mãe",
+        "mae",
+        "pai",
+        "cônjuge",
+        "conjuge",
+        "inclusão de dependente",
+        "inclusao de dependente",
+        "exclusão de dependente",
+        "exclusao de dependente"
+      ],
+      "contextTerms": [
+        "certidão",
+        "certidao",
+        "documentos",
+        "plano",
+        "ir",
+        "metlife",
+        "saúde",
+        "saude"
+      ],
+      "negativeTerms": [],
+      "examples": [
+        "Quero incluir minha filha",
+        "Quem são meus dependentes no MetLife",
+        "Excluir dependente do plano"
+      ]
+    },
+    {
+      "id": "cadastro_dados",
+      "label": "Cadastro / Dados pessoais",
+      "group": "Cadastro",
+      "priority": 74,
+      "description": "Alteração de dados cadastrais, nome, endereço, documentos, banco, e-mail, telefone ou dados pessoais.",
+      "strongTerms": [
+        "alteração cadastral",
+        "alteracao cadastral",
+        "cadastro",
+        "dados cadastrais",
+        "endereço",
+        "endereco",
+        "telefone",
+        "email",
+        "e-mail",
+        "nome",
+        "cpf",
+        "rg",
+        "banco",
+        "conta bancária",
+        "conta bancaria"
+      ],
+      "contextTerms": [
+        "corrigir",
+        "atualizar",
+        "alterar",
+        "documento",
+        "comprovante"
+      ],
+      "negativeTerms": [],
+      "examples": [
+        "Alterar endereço",
+        "Corrigir nome no cadastro",
+        "Atualizar conta bancária"
+      ]
+    },
+    {
+      "id": "plano_saude",
+      "label": "Plano de saúde / SulAmérica",
+      "group": "Benefícios",
+      "priority": 72,
+      "description": "Chamados sobre assistência médica, SulAmérica, carteirinha, rede, inclusão/exclusão ou problemas no plano de saúde.",
+      "strongTerms": [
+        "plano de saude",
+        "plano de saúde",
+        "saude",
+        "saúde",
+        "sulamerica",
+        "sulamérica",
+        "carteirinha",
+        "assistência médica",
+        "assistencia medica",
+        "convênio",
+        "convenio"
+      ],
+      "contextTerms": [
+        "dependente",
+        "incluir",
+        "excluir",
+        "rede",
+        "coparticipação",
+        "coparticipacao"
+      ],
+      "negativeTerms": [],
+      "examples": [
+        "Não recebi carteirinha SulAmérica",
+        "Alterar dados do plano de saúde",
+        "Incluir dependente no plano"
+      ]
+    },
+    {
+      "id": "odonto",
+      "label": "Odonto",
+      "group": "Benefícios",
+      "priority": 70,
+      "description": "Solicitações de plano odontológico, inclusão, exclusão, carteirinha ou dúvidas do benefício odontológico.",
+      "strongTerms": [
+        "odonto",
+        "odontologico",
+        "odontológico",
+        "dental"
+      ],
+      "contextTerms": [
+        "plano",
+        "carteirinha",
+        "dependente",
+        "incluir",
+        "excluir"
+      ],
+      "negativeTerms": [],
+      "examples": [
+        "Solicitação de odonto",
+        "Incluir dependente no plano odontológico"
+      ]
+    },
+    {
+      "id": "vr_ifood_alelo",
+      "label": "VR / iFood / Alelo / Univers",
+      "group": "Benefícios",
+      "priority": 68,
+      "description": "Chamados sobre vale-refeição/alimentação, iFood Benefícios, Alelo, Univers, cartão e saldo de benefícios.",
+      "strongTerms": [
+        "ifood",
+        "i food",
+        "alelo",
+        "univers",
+        "vr",
+        "va",
+        "vale refeição",
+        "vale refeicao",
+        "vale alimentação",
+        "vale alimentacao",
+        "cartão",
+        "cartao",
+        "beneficio",
+        "benefício",
+        "saldo"
+      ],
+      "contextTerms": [
+        "crédito",
+        "credito",
+        "desconto",
+        "recarga",
+        "aplicativo",
+        "acesso ao beneficio"
+      ],
+      "negativeTerms": [
+        "plano de saúde",
+        "plano de saude",
+        "petlove"
+      ],
+      "examples": [
+        "Não consigo acessar o benefício Univers",
+        "Dúvida sobre iFood benefícios",
+        "Cartão VR sem saldo"
+      ]
+    },
+    {
+      "id": "vale_transporte",
+      "label": "Vale-transporte",
+      "group": "Benefícios",
+      "priority": 66,
+      "description": "Solicitações sobre VT, recarga, rota, bilhete, transporte e alteração de vale-transporte.",
+      "strongTerms": [
+        "vale transporte",
+        "vale-transporte",
+        "vt",
+        "bilhete",
+        "transporte",
+        "recarga"
+      ],
+      "contextTerms": [
+        "rota",
+        "ônibus",
+        "onibus",
+        "metrô",
+        "metro",
+        "linha"
+      ],
+      "negativeTerms": [],
+      "examples": [
+        "Alterar meu VT",
+        "Não caiu recarga do vale-transporte"
+      ]
+    },
+    {
+      "id": "metlife_seguro",
+      "label": "MetLife / Seguro de vida",
+      "group": "Benefícios",
+      "priority": 64,
+      "description": "Dúvidas sobre seguro de vida, MetLife, beneficiários e dependentes vinculados ao seguro.",
+      "strongTerms": [
+        "metlife",
+        "met life",
+        "seguro de vida",
+        "seguro",
+        "beneficiário",
+        "beneficiario"
+      ],
+      "contextTerms": [
+        "dependente",
+        "filha",
+        "filho",
+        "incluir",
+        "excluir"
+      ],
+      "negativeTerms": [
+        "petlove"
+      ],
+      "examples": [
+        "Quem são meus dependentes no MetLife",
+        "Incluir beneficiário no seguro"
+      ]
+    },
+    {
+      "id": "petlove",
+      "label": "PetLove",
+      "group": "Benefícios",
+      "priority": 62,
+      "description": "Chamados sobre benefício PetLove, inclusão ou exclusão de pets e plano pet.",
+      "strongTerms": [
+        "petlove",
+        "pet love",
+        "plano pet",
+        "pets",
+        "pet"
+      ],
+      "contextTerms": [
+        "zeus",
+        "maria kyara",
+        "incluir",
+        "excluir",
+        "tranquilo"
+      ],
+      "negativeTerms": [
+        "dependente humano"
+      ],
+      "examples": [
+        "Excluir pets do PetLove",
+        "Dúvida sobre plano PetLove"
+      ]
+    },
+    {
+      "id": "rescisao",
+      "label": "Rescisão / Desligamento",
+      "group": "Movimentação",
+      "priority": 60,
+      "description": "Pedidos ou dúvidas relacionados a rescisão, desligamento, verbas rescisórias, TRCT e homologação.",
+      "strongTerms": [
+        "rescisão",
+        "rescisao",
+        "desligamento",
+        "demissão",
+        "demissao",
+        "trct",
+        "homologação",
+        "homologacao",
+        "verbas rescisorias",
+        "verbas rescisórias"
+      ],
+      "contextTerms": [
+        "fgts",
+        "seguro desemprego",
+        "aviso prévio",
+        "aviso previo"
+      ],
+      "negativeTerms": [],
+      "examples": [
+        "Dúvida sobre rescisão",
+        "Preciso do TRCT",
+        "Verbas rescisórias"
+      ]
+    },
+    {
+      "id": "admissao_documentos",
+      "label": "Admissão / Documentação",
+      "group": "Movimentação",
+      "priority": 58,
+      "description": "Documentos admissionais, pendências de admissão, exames, cadastro inicial e envio de documentos.",
+      "strongTerms": [
+        "admissão",
+        "admissao",
+        "admissional",
+        "documentos admissionais",
+        "exame admissional",
+        "contratação",
+        "contratacao"
+      ],
+      "contextTerms": [
+        "enviar documentos",
+        "pendência",
+        "pendencia",
+        "cadastro inicial"
+      ],
+      "negativeTerms": [],
+      "examples": [
+        "Pendência de documentos admissionais",
+        "Dúvida sobre exame admissional"
+      ]
+    },
+    {
+      "id": "declaracoes_comprovantes",
+      "label": "Declarações / Comprovantes",
+      "group": "Documentos",
+      "priority": 54,
+      "description": "Solicitações de declarações, comprovantes, carta, documentos e segunda via que não sejam IRRF específico.",
+      "strongTerms": [
+        "declaração",
+        "declaracao",
+        "comprovante",
+        "carta",
+        "segunda via",
+        "documento",
+        "arquivo",
+        "anexo"
+      ],
+      "contextTerms": [
+        "enviar",
+        "solicito",
+        "preciso",
+        "declaração de vínculo",
+        "declaracao de vinculo"
+      ],
+      "negativeTerms": [
+        "informe de rendimentos",
+        "irrf"
+      ],
+      "examples": [
+        "Preciso de declaração",
+        "Solicito comprovante",
+        "Enviar segunda via"
+      ]
+    },
+    {
+      "id": "outros",
+      "label": "Outros não classificados",
+      "group": "Outros",
+      "priority": 1,
+      "description": "Casos que não bateram com segurança em nenhum classificador específico.",
+      "strongTerms": [],
+      "contextTerms": [],
+      "negativeTerms": [],
+      "examples": [
+        "Mensagem genérica sem termo suficiente"
+      ]
+    }
+  ]
+}

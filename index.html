@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Leitor de Chamados RH Sonova</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <p class="eyebrow">Dashboard operacional</p>
+      <h1>Leitor de Chamados RH Sonova</h1>
+      <p class="subtitle">Leia as abas da planilha, consolide números, filtre por cards e valide a classificação dos maiores problemas.</p>
+    </div>
+    <div class="uploadBox">
+      <label for="fileInput">Importar Excel atualizado</label>
+      <input id="fileInput" type="file" accept=".xlsx,.xls" />
+      <button id="clearDataBtn" type="button" title="Remove os dados atuais da memória. Faça o upload do novo Excel para continuar.">Limpar dados</button>
+      <small id="sourceInfo">Tentando leitura automática da planilha na pasta.</small>
+    </div>
+  </header>
+
+  <main>
+    <section class="controlPanel">
+      <div class="field">
+        <label>Aba</label>
+        <select id="sheetFilter">
+          <option value="__all__">Todas as abas</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Status</label>
+        <select id="statusFilter"><option value="__all__">Todos</option></select>
+      </div>
+      <div class="field">
+        <label>Owner</label>
+        <select id="ownerFilter"><option value="__all__">Todos</option></select>
+      </div>
+      <div class="field">
+        <label>Urgência</label>
+        <select id="urgencyFilter"><option value="__all__">Todas</option></select>
+      </div>
+      <div class="field">
+        <label>Grupo</label>
+        <select id="groupFilter"><option value="__all__">Todos</option></select>
+      </div>
+      <div class="field">
+        <label>Abertura de</label>
+        <input id="dateFrom" type="date" />
+      </div>
+      <div class="field">
+        <label>Abertura até</label>
+        <input id="dateTo" type="date" />
+      </div>
+      <div class="field searchField">
+        <label>Buscar texto</label>
+        <input id="searchInput" type="search" placeholder="Nome, e-mail, CPF, solicitação, observação..." />
+      </div>
+      <button id="resetBtn" type="button">Limpar filtros</button>
+    </section>
+
+
+    <div class="helperLine">
+      <span id="activeFilterInfo">Clique em um card ou em uma classificação para testar se a leitura está boa.</span>
+      <strong>Regra de SLA: abertura + 2 dias</strong>
+    </div>
+
+    <section class="kpiGrid" id="kpiGrid"></section>
+
+    <section class="insightGrid">
+      <article class="panel wide">
+        <div class="panelHeader">
+          <h2>Maiores problemas detectados</h2>
+          <p>Classificação por tipo de solicitação e palavras-chave. Clique em uma barra para filtrar e validar os casos.</p>
+        </div>
+        <div id="problemList" class="barList"></div>
+      </article>
+
+      <article class="panel">
+        <div class="panelHeader">
+          <h2>Distribuição por status</h2>
+          <p>Mostra gargalos e registros sem tratamento.</p>
+        </div>
+        <div id="statusList" class="barList compact"></div>
+      </article>
+
+      <article class="panel">
+        <div class="panelHeader">
+          <h2>Responsáveis</h2>
+          <p>Volume por owner.</p>
+        </div>
+        <div id="ownerList" class="barList compact"></div>
+      </article>
+
+      <article class="panel">
+        <div class="panelHeader">
+          <h2>Empresas</h2>
+          <p>Volume por empresa informada.</p>
+        </div>
+        <div id="companyList" class="barList compact"></div>
+      </article>
+    </section>
+
+
+
+    <section class="panel glossaryPanel">
+      <div class="panelHeader tableHeader">
+        <div>
+          <h2>Glossário geral e classificadores</h2>
+          <p>Regras visíveis para validar a leitura dos chamados. O texto livre do chamado tem prioridade sobre o tipo marcado no formulário.</p>
+        </div>
+        <div class="tableActions">
+          <button id="exportClassifiersBtn" type="button">Exportar classificadores JSON</button>
+        </div>
+      </div>
+      <div id="glossaryList" class="glossaryList"></div>
+    </section>
+    <section class="panel tablePanel">
+      <div class="panelHeader tableHeader">
+        <div>
+          <h2>Casos detalhados</h2>
+          <p id="tableSubtitle">Registros filtrados.</p>
+        </div>
+        <div class="tableActions">
+          <button id="exportCsvBtn" type="button">Exportar CSV filtrado</button>
+        </div>
+      </div>
+      <div class="tableWrap">
+        <table id="dataTable">
+          <thead></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    Anderson Marinho | Igarapé Digital
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
