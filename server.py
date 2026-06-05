@@ -16,8 +16,22 @@ import xml.etree.ElementTree as ET
 
 PORT = 8000
 BASE_DIR = Path(__file__).resolve().parent
-WORKBOOK_NAME = "Chamados RH Sonova (respostas) até 28-05-2026.xlsx"
-WORKBOOK_PATH = BASE_DIR / WORKBOOK_NAME
+DEFAULT_WORKBOOK_NAME = "Chamados RH Sonova (respostas) 05-06-2026.xlsx"
+
+
+def find_latest_workbook():
+    candidates = sorted(
+        BASE_DIR.glob("Chamados RH Sonova (respostas)*.xlsx"),
+        key=lambda path: path.stat().st_mtime,
+        reverse=True,
+    )
+    if candidates:
+        return candidates[0]
+    return BASE_DIR / DEFAULT_WORKBOOK_NAME
+
+
+WORKBOOK_PATH = find_latest_workbook()
+WORKBOOK_NAME = WORKBOOK_PATH.name
 
 NS = {
     "main": "http://schemas.openxmlformats.org/spreadsheetml/2006/main",
@@ -184,11 +198,12 @@ class Handler(SimpleHTTPRequestHandler):
         parsed = urlparse(self.path)
         if parsed.path == "/api/workbook":
             try:
-                sheets = read_xlsx_to_json(WORKBOOK_PATH)
+                workbook_path = find_latest_workbook()
+                sheets = read_xlsx_to_json(workbook_path)
                 total = sum(len(v) for v in sheets.values())
                 payload = {
                     "ok": True,
-                    "file": WORKBOOK_NAME,
+                    "file": workbook_path.name,
                     "totalRows": total,
                     "sheets": sheets,
                     "readAt": _dt.datetime.now().isoformat(timespec="seconds"),
@@ -216,7 +231,7 @@ def main():
     import webbrowser
     server = ThreadingHTTPServer(("127.0.0.1", PORT), Handler)
     print(f"Servidor iniciado em http://localhost:{PORT}/index.html")
-    print(f"Lendo automaticamente: {WORKBOOK_PATH}")
+    print(f"Lendo automaticamente o Excel mais recente da pasta: {find_latest_workbook()}")
     webbrowser.open(f"http://localhost:{PORT}/index.html")
     server.serve_forever()
 

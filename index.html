@@ -14,10 +14,10 @@
       <p class="subtitle">Leia as abas da planilha, consolide números, filtre por cards e valide a classificação dos maiores problemas.</p>
     </div>
     <div class="uploadBox">
-      <label for="fileInput">Importar Excel atualizado</label>
+      <label for="fileInput">Importar Excel atualizado / salvar como histórico</label>
       <input id="fileInput" type="file" accept=".xlsx,.xls" />
-      <button id="clearDataBtn" type="button" title="Remove os dados atuais da memória. Faça o upload do novo Excel para continuar.">Limpar dados</button>
-      <small id="sourceInfo">Tentando leitura automática da planilha na pasta.</small>
+      <button id="clearDataBtn" type="button" title="Remove o último histórico importado salvo neste navegador. Faça o upload do novo Excel para gravar nova base padrão.">Limpar dados</button>
+      <small id="sourceInfo">Prioridade: último histórico importado salvo no navegador.</small>
     </div>
   </header>
 
@@ -123,6 +123,7 @@
           <p id="tableSubtitle">Registros filtrados.</p>
         </div>
         <div class="tableActions">
+          <button id="exportKpiBaseBtn" type="button">Exportar base KPI</button>
           <button id="exportCsvBtn" type="button">Exportar CSV filtrado</button>
         </div>
       </div>
