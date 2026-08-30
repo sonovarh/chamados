@@ -96,6 +96,8 @@ h1,h2,h3,h4{font-family:'Rufina',serif;font-weight:700}
 .kv{font-size:22px;color:var(--dk);line-height:1}
 .kc.active .kv{color:var(--p)}
 .ks{font-size:10.5px;color:var(--mu);margin-top:3px}
+.kc.resolver .kv{font-size:15px;line-height:1.2;word-break:break-word}
+.kc.resolver.active .kv{color:var(--p)}
 
 /* INSIGHT GRID */
 .igrid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:11px;margin-bottom:20px}
@@ -273,6 +275,15 @@ td.terms{max-width:220px;min-width:140px;color:var(--mu);font-size:11px}
     <!-- KPI CARDS -->
     <div class="kgrid" id="kpi-grid"></div>
 
+    <!-- RESOLVER CARDS -->
+    <div class="sec" id="resolver-cards-sec" style="display:none">
+      <div class="stt" style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+        <span>Quem resolveu &mdash; cada responsavel</span>
+        <span id="resolver-cards-note" style="font-size:11px;color:var(--mu);font-weight:400"></span>
+      </div>
+      <div class="kgrid" id="resolver-grid"></div>
+    </div>
+
     <!-- INSIGHT PANELS -->
     <div class="igrid">
       <div class="cc wide">
@@ -302,6 +313,13 @@ td.terms{max-width:220px;min-width:140px;color:var(--mu);font-size:11px}
           <p>Volume por empresa informada.</p>
         </div>
         <div id="bar-empresa"></div>
+      </div>
+      <div class="cc">
+        <div class="cc-hdr">
+          <h4>Quem resolveu os chamados</h4>
+          <p>Concluidos por responsavel + taxa de conclusao. Clique para filtrar.</p>
+        </div>
+        <div id="bar-resolver"></div>
       </div>
     </div>
 
@@ -361,8 +379,10 @@ const LS_LM  = 'sonova_rh_chamados_ultimo_historico_meta_v1';
 let workbookData     = {};
 let ALL              = [];
 let FILT             = [];
+let FILT_BASE        = []; // conjunto filtrado SEM o filtro de resolvedor (mantem cards navegaveis)
 let activeKpiFilter  = null;
 let activeProbFilter = '__all__';
+let activeResolver   = null; // pessoa selecionada no card/painel "quem resolveu"
 
 // estado de ordenacao da tabela
 let tSort = {col: null, dir: 1}; // dir: 1=asc, -1=desc
@@ -644,7 +664,7 @@ function applyFilters(){
   const dt=document.getElementById('f-date-to').value;
   const srch=normTxt(document.getElementById('f-search').value).toLowerCase();
 
-  FILT=ALL.filter(r=>{
+  FILT_BASE=ALL.filter(r=>{
     if(sheet!=='__all__'&&r.__sheet!==sheet)return false;
     if(status!=='__all__'&&r.__status!==status)return false;
     if(owner!=='__all__'&&r.__owner!==owner)return false;
@@ -656,6 +676,7 @@ function applyFilters(){
     if(srch&&!r.__search.includes(srch))return false;
     return true;
   });
+  FILT=activeResolver?FILT_BASE.filter(r=>isDone(r)&&r.__owner===activeResolver):FILT_BASE;
   renderDash();
 }
 
@@ -671,6 +692,8 @@ function renderKpis(){
   const ovDays=FILT.filter(r=>!isDone(r)&&r.__sla.atraso>0).map(r=>r.__sla.atraso);
   const avgOv=ovDays.length?Math.round(ovDays.reduce((a,b)=>a+b,0)/ovDays.length):0;
   const pctDone=total?Math.round(done/total*100):0;
+  const resolvedRank=countBy(FILT_BASE.filter(isDone),r=>r.__owner).filter(([n])=>n&&n!=='(vazio)');
+  const topRes=resolvedRank[0]||null;
 
   const defs=[
     {l:'Total filtrado',v:total,s:'registros',k:'',cls:''},
@@ -679,30 +702,43 @@ function renderKpis(){
     {l:'Sem status',v:blank,s:'risco de triagem',k:'blank',cls:'er'},
     {l:'Alta urgencia',v:high,s:'prioridade declarada',k:'high',cls:'ac'},
     {l:'Dentro SLA',v:inside,s:`abertura + ${SLA_DIAS} dias`,k:'inside',cls:'ok'},
-    {l:'Fora SLA',v:overdue,s:`media atraso: ${avgOv} dia(s)`,k:'overdue',cls:'er'}
+    {l:'Fora SLA',v:overdue,s:`media atraso: ${avgOv} dia(s)`,k:'overdue',cls:'er'},
+    {l:'Top resolvedor',v:topRes?topRes[0]:'—',s:topRes?`${topRes[1]} concluido(s)`:'sem concluidos',resolver:true,name:topRes?topRes[0]:'',cls:'ok'}
   ];
 
   document.getElementById('kpi-grid').innerHTML=defs.map(d=>{
+    if(d.resolver){
+      const act=d.name&&activeResolver===d.name?' active':'';
+      const cli=d.name?' clickable':'';
+      const attr=d.name?` data-resolver="${esc(d.name)}" tabindex="0" role="button"`:'';
+      return `<div class="kc resolver ${d.cls}${cli}${act}"${attr}><div class="kl">${esc(d.l)}</div><div class="kv">${esc(String(d.v))}</div><div class="ks">${esc(d.s)}</div></div>`;
+    }
     const act=d.k&&activeKpiFilter===d.k?' active':'';
     const cli=d.k?' clickable':'';
     const attr=d.k?` data-kpi="${d.k}" tabindex="0" role="button"`:'';
     return `<div class="kc ${d.cls}${cli}${act}"${attr}><div class="kl">${esc(d.l)}</div><div class="kv">${d.v}</div><div class="ks">${esc(d.s)}</div></div>`;
   }).join('');
 
-  document.querySelectorAll('.kc.clickable').forEach(el=>{
+  document.querySelectorAll('.kc.clickable[data-kpi]').forEach(el=>{
     el.addEventListener('click',()=>toggleKpi(el.dataset.kpi));
     el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggleKpi(el.dataset.kpi);}});
+  });
+  document.querySelectorAll('.kc.resolver[data-resolver]').forEach(el=>{
+    el.addEventListener('click',()=>toggleResolver(el.dataset.resolver));
+    el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggleResolver(el.dataset.resolver);}});
   });
 
   document.getElementById('d-total').textContent=total;
   const parts=[];
   if(activeKpiFilter)parts.push('card KPI ativo');
   if(activeProbFilter!=='__all__')parts.push(`classificacao: ${activeProbFilter}`);
+  if(activeResolver)parts.push(`resolvedor: ${activeResolver}`);
   document.getElementById('filter-info').textContent=parts.length?`— Filtro: ${parts.join(' | ')}`:' ';
 }
 
 function toggleKpi(k){activeKpiFilter=activeKpiFilter===k?null:k;applyFilters();}
 function toggleProb(lbl){activeProbFilter=activeProbFilter===lbl?'__all__':lbl;applyFilters();}
+function toggleResolver(n){if(!n)return;activeResolver=activeResolver===n?null:n;applyFilters();}
 
 // ── BAR LIST ──────────────────────────────────────────────────────────────
 function renderBarList(id,items,limit=10,clickable=false){
@@ -723,6 +759,54 @@ function renderBarList(id,items,limit=10,clickable=false){
       el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggleProb(el.dataset.prob);}});
     });
   }
+}
+
+// ── QUEM RESOLVEU ─────────────────────────────────────────────────────────
+function renderResolverCards(){
+  const sec=document.getElementById('resolver-cards-sec');
+  const grid=document.getElementById('resolver-grid');
+  if(!grid)return;
+  // ranking sobre a base sem filtro de resolvedor -> cards sempre navegaveis
+  const rank=countBy(FILT_BASE.filter(isDone),r=>r.__owner).filter(([n])=>n&&n!=='(vazio)');
+  const totalByOwner=new Map();
+  FILT_BASE.forEach(r=>{const k=r.__owner;if(!k||k==='(vazio)')return;totalByOwner.set(k,(totalByOwner.get(k)||0)+1);});
+  if(!rank.length){sec.style.display='none';grid.innerHTML='';return;}
+  sec.style.display='';
+  const totalConcl=rank.reduce((a,[,v])=>a+v,0);
+  const note=document.getElementById('resolver-cards-note');
+  if(note)note.textContent=`${rank.length} responsavel(is) - ${totalConcl} concluido(s)`;
+  grid.innerHTML=rank.map(([name,val])=>{
+    const tot=totalByOwner.get(name)||val;
+    const taxa=tot?Math.round(val/tot*100):0;
+    const act=activeResolver===name?' active':'';
+    return `<div class="kc resolver ok clickable${act}" data-resolver="${esc(name)}" tabindex="0" role="button"><div class="kl">Resolvedor</div><div class="kv">${esc(name)}</div><div class="ks">${val} concl. &middot; taxa ${taxa}%</div></div>`;
+  }).join('');
+  grid.querySelectorAll('.kc.resolver[data-resolver]').forEach(el=>{
+    el.addEventListener('click',()=>toggleResolver(el.dataset.resolver));
+    el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggleResolver(el.dataset.resolver);}});
+  });
+}
+
+function renderResolverList(id){
+  const cont=document.getElementById(id);
+  if(!cont)return;
+  // ranking de concluidos por responsavel (exclui vazio) — sobre a base sem filtro de resolvedor
+  const rank=countBy(FILT_BASE.filter(isDone),r=>r.__owner).filter(([n])=>n&&n!=='(vazio)');
+  // total atribuido por responsavel (qualquer status) para a taxa de conclusao
+  const totalByOwner=new Map();
+  FILT_BASE.forEach(r=>{const k=r.__owner;if(!k||k==='(vazio)')return;totalByOwner.set(k,(totalByOwner.get(k)||0)+1);});
+  const max=Math.max(...rank.map(x=>x[1]),1);
+  cont.innerHTML=rank.slice(0,8).map(([name,val])=>{
+    const pct=Math.round(val/max*100);
+    const tot=totalByOwner.get(name)||val;
+    const taxa=tot?Math.round(val/tot*100):0;
+    const act=activeResolver===name?' active':'';
+    return `<div class="bar-item clickable${act}" data-resolver="${esc(name)}" tabindex="0" role="button"><div class="bar-top"><b>${esc(name)}</b><span>${val} concl. &middot; taxa ${taxa}%</span></div><div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div></div>`;
+  }).join('')||'<p style="font-size:12px;color:var(--mu)">Nenhum chamado concluido no filtro atual.</p>';
+  cont.querySelectorAll('.bar-item.clickable').forEach(el=>{
+    el.addEventListener('click',()=>toggleResolver(el.dataset.resolver));
+    el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggleResolver(el.dataset.resolver);}});
+  });
 }
 
 // ── GLOSSARY ──────────────────────────────────────────────────────────────
@@ -899,10 +983,12 @@ function renderTable(){
 // ── RENDER DASH ───────────────────────────────────────────────────────────
 function renderDash(){
   renderKpis();
+  renderResolverCards();
   renderBarList('bar-problems',countBy(FILT,r=>r.__problem),12,true);
   renderBarList('bar-status',countBy(FILT,r=>r.__status),8);
   renderBarList('bar-owner',countBy(FILT,r=>r.__owner),8);
   renderBarList('bar-empresa',countBy(FILT,r=>r.__empresa),8);
+  renderResolverList('bar-resolver');
   renderTable();
   renderGlossary();
 }
@@ -1131,7 +1217,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     document.getElementById('f-date-from').value='';
     document.getElementById('f-date-to').value='';
     document.getElementById('f-search').value='';
-    activeKpiFilter=null;activeProbFilter='__all__';
+    activeKpiFilter=null;activeProbFilter='__all__';activeResolver=null;
     tSort={col:null,dir:1};
     TQ.classificacao='';TQ.grupo='';TQ.sla='';TQ.confianca='';TQ.search='';
     ['tq-classificacao','tq-grupo','tq-sla','tq-confianca'].forEach(id=>{document.getElementById(id).value='';});
