@@ -113,8 +113,11 @@ def _read_workbook_sheet_map(z):
     rels = {}
     for rel in rel_root.findall("rel:Relationship", NS):
         target = rel.attrib.get("Target", "")
-        if not target.startswith("xl/"):
-            target = "xl/" + target.lstrip("/")
+        if target.startswith("/"):
+            # Caminho absoluto no pacote (ex.: "/xl/worksheets/sheet1.xml", gerado por openpyxl e outras ferramentas)
+            target = target.lstrip("/")
+        elif not target.startswith("xl/"):
+            target = "xl/" + target
         rels[rel.attrib.get("Id")] = target
     sheets = []
     for sheet in wb_root.findall("main:sheets/main:sheet", NS):

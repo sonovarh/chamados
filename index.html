@@ -188,6 +188,43 @@ td.terms{max-width:220px;min-width:140px;color:var(--mu);font-size:11px}
   opacity:0;transition:.25s;z-index:999;pointer-events:none}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
+/* MAIORES ACIONADORES */
+.req-table{min-width:1180px}
+.req-table th{background:#E8F3FA;color:var(--dk)}
+.req-table td{white-space:nowrap}
+.req-table td.wrap{white-space:normal;min-width:180px;max-width:260px}
+.req-table td.num,.req-table th.num{text-align:right}
+.req-table td.mono{font-variant-numeric:tabular-nums}
+.req-table td.muted{color:#aaa}
+.req-table tbody tr{cursor:default}
+.req-table tbody tr:nth-child(even){background:#FAFCFE}
+.req-table tbody tr:hover{background:#F1F7FC}
+.req-table tbody tr.req-sel{background:#FFF3CD}
+.req-table tbody tr.req-act{outline:2px solid rgba(0,131,202,.45);outline-offset:-2px}
+.req-table a{color:var(--p);text-decoration:none}
+.req-table a:hover{text-decoration:underline}
+.req-ck{width:30px;text-align:center !important}
+.req-ck input{cursor:pointer}
+.req-hint{font-size:10.5px;color:var(--mu);padding:6px 13px;border-top:1px solid var(--bd);background:#FAFBFC}
+.tpanel-acts button.primary{background:var(--p);color:#fff;border-color:var(--p)}
+.tpanel-acts button.primary:hover{background:var(--dk);border-color:var(--dk)}
+
+/* MODAL DETALHE ACIONADOR */
+.mdl-bg{position:fixed;inset:0;background:rgba(0,40,70,.45);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px}
+.mdl{background:#fff;border-radius:10px;width:min(1120px,100%);max-height:90vh;display:flex;flex-direction:column;border:1px solid var(--bd);overflow:hidden}
+.mdl-hdr{background:var(--p);color:#fff;padding:12px 16px;display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.mdl-hdr h3{font-size:16px;margin:0;color:#fff}
+.mdl-hdr p{font-size:11px;opacity:.85;margin-top:2px}
+.mdl-x{background:none;border:none;color:#fff;font-size:24px;cursor:pointer;line-height:1}
+.mdl-body{padding:14px 16px;overflow:auto}
+.mdl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px;margin-bottom:14px}
+.mdl-f{border:1px solid var(--bd);border-radius:6px;padding:8px 10px}
+.mdl-f span{display:block;font-size:10px;text-transform:uppercase;color:var(--mu);letter-spacing:.05em;font-weight:500;margin-bottom:2px}
+.mdl-f b{font-size:12.5px;color:var(--dk);font-weight:500;word-break:break-word}
+.mdl-body table{min-width:900px}
+.mdl-body th{background:#E8F3FA}
+.mdl-ft{padding:10px 16px;border-top:1px solid var(--bd);justify-content:flex-end;flex-wrap:wrap}
+
 @media(max-width:1100px){
   .igrid{grid-template-columns:1fr}
   .igrid .wide{grid-row:auto}
@@ -284,6 +321,54 @@ td.terms{max-width:220px;min-width:140px;color:var(--mu);font-size:11px}
       <div class="kgrid" id="resolver-grid"></div>
     </div>
 
+    <!-- MAIORES ACIONADORES -->
+    <div class="tpanel" id="req-sec">
+      <div class="tpanel-hdr">
+        <div>
+          <h4>Maiores acionadores &mdash; quem mais abre chamados</h4>
+          <p id="req-subtitle">Agrupado por CPF (ou e-mail quando nao houver CPF). Respeita os filtros da barra lateral e os cards.</p>
+        </div>
+        <div class="tpanel-acts">
+          <button id="req-copy-emails" title="Copia os e-mails separados por ponto e virgula (Outlook/Teams)">Copiar e-mails</button>
+          <button id="req-export-csv">Exportar CSV</button>
+          <button id="req-export-xlsx" class="primary">Exportar contatos (Excel)</button>
+        </div>
+      </div>
+      <div class="tqbar">
+        <span class="tqbar-lbl">Mostrar</span>
+        <select id="req-top">
+          <option value="10">Top 10</option>
+          <option value="20" selected>Top 20</option>
+          <option value="50">Top 50</option>
+          <option value="100">Top 100</option>
+          <option value="0">Todos</option>
+        </select>
+        <select id="req-min">
+          <option value="1" selected>1+ chamado</option>
+          <option value="2">2+ chamados</option>
+          <option value="3">3+ chamados</option>
+          <option value="5">5+ chamados</option>
+          <option value="10">10+ chamados</option>
+        </select>
+        <select id="req-scope">
+          <option value="all">Todos os acionadores</option>
+          <option value="open">Com chamado em aberto</option>
+          <option value="overdue">Com chamado fora do SLA</option>
+          <option value="nocpf">Sem CPF ou CPF a verificar</option>
+        </select>
+        <div class="tqbar-sep"></div>
+        <input type="search" id="req-search" placeholder="Nome, CPF, e-mail, empresa...">
+        <button class="tqbar-clr" id="req-sel-clr">Limpar selecao</button>
+      </div>
+      <div class="twrap" style="max-height:460px">
+        <table id="req-table" class="req-table">
+          <thead></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div class="req-hint">Marque as caixas para exportar/copiar apenas os selecionados (sem selecao = exporta a lista exibida). Clique no nome para filtrar o dashboard pela pessoa. Duplo clique na linha abre o historico completo.</div>
+    </div>
+
     <!-- INSIGHT PANELS -->
     <div class="igrid">
       <div class="cc wide">
@@ -366,6 +451,25 @@ td.terms{max-width:220px;min-width:140px;color:var(--mu);font-size:11px}
   </div>
 </div>
 
+<!-- MODAL DETALHE DO ACIONADOR -->
+<div class="mdl-bg" id="req-modal" style="display:none">
+  <div class="mdl" role="dialog" aria-modal="true" aria-labelledby="req-mdl-title">
+    <div class="mdl-hdr">
+      <div>
+        <h3 id="req-mdl-title">Acionador</h3>
+        <p id="req-mdl-sub"></p>
+      </div>
+      <button class="mdl-x" id="req-mdl-close" aria-label="Fechar">&times;</button>
+    </div>
+    <div class="mdl-body" id="req-mdl-body"></div>
+    <div class="mdl-ft tpanel-acts">
+      <button id="req-mdl-copy">Copiar contato</button>
+      <button id="req-mdl-csv">Exportar chamados da pessoa (CSV)</button>
+      <button id="req-mdl-filter" class="primary">Filtrar dashboard por esta pessoa</button>
+    </div>
+  </div>
+</div>
+
 <script>
 // ── CONSTANTES E ESTADO ───────────────────────────────────────────────────
 const SLA_DIAS = 2;
@@ -383,6 +487,15 @@ let FILT_BASE        = []; // conjunto filtrado SEM o filtro de resolvedor (mant
 let activeKpiFilter  = null;
 let activeProbFilter = '__all__';
 let activeResolver   = null; // pessoa selecionada no card/painel "quem resolveu"
+let activeRequester  = null; // chave da pessoa (cpf:/email:/nome:) selecionada em "maiores acionadores"
+let activeRequesterLabel = '';
+
+// estado do painel "maiores acionadores"
+const REQ = {top:20, min:1, scope:'all', search:'', sel:new Set(), sort:{col:1, dir:1}};
+let REQ_ALL   = [];        // ranking completo (sobre FILT_BASE)
+let REQ_INDEX = new Map(); // chave -> pessoa
+let REQ_ROWS  = [];        // lista exibida (apos top/min/escopo/busca/ordenacao)
+let REQ_MODAL_KEY = null;
 
 // estado de ordenacao da tabela
 let tSort = {col: null, dir: 1}; // dir: 1=asc, -1=desc
@@ -677,6 +790,7 @@ function applyFilters(){
     return true;
   });
   FILT=activeResolver?FILT_BASE.filter(r=>isDone(r)&&r.__owner===activeResolver):FILT_BASE;
+  if(activeRequester)FILT=FILT.filter(r=>r.__personKey===activeRequester);
   renderDash();
 }
 
@@ -733,12 +847,19 @@ function renderKpis(){
   if(activeKpiFilter)parts.push('card KPI ativo');
   if(activeProbFilter!=='__all__')parts.push(`classificacao: ${activeProbFilter}`);
   if(activeResolver)parts.push(`resolvedor: ${activeResolver}`);
+  if(activeRequester)parts.push(`acionador: ${activeRequesterLabel||activeRequester}`);
   document.getElementById('filter-info').textContent=parts.length?`— Filtro: ${parts.join(' | ')}`:' ';
 }
 
 function toggleKpi(k){activeKpiFilter=activeKpiFilter===k?null:k;applyFilters();}
 function toggleProb(lbl){activeProbFilter=activeProbFilter===lbl?'__all__':lbl;applyFilters();}
 function toggleResolver(n){if(!n)return;activeResolver=activeResolver===n?null:n;applyFilters();}
+function toggleRequester(key){
+  if(!key)return;
+  if(activeRequester===key){activeRequester=null;activeRequesterLabel='';}
+  else{activeRequester=key;const p=REQ_INDEX.get(key);activeRequesterLabel=p?p.nome:key;}
+  applyFilters();
+}
 
 // ── BAR LIST ──────────────────────────────────────────────────────────────
 function renderBarList(id,items,limit=10,clickable=false){
@@ -807,6 +928,373 @@ function renderResolverList(id){
     el.addEventListener('click',()=>toggleResolver(el.dataset.resolver));
     el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggleResolver(el.dataset.resolver);}});
   });
+}
+
+// ── MAIORES ACIONADORES ───────────────────────────────────────────────────
+// CPF: mantem somente digitos e recompõe zeros a esquerda perdidos quando o Excel gravou como numero.
+function cpfDigits(v){
+  let d=String(v??'').replace(/\D/g,'');
+  if(!d)return '';
+  if(d.length>=8&&d.length<11)d=d.padStart(11,'0');
+  return d;
+}
+function fmtCpf(d){return d&&d.length===11?`${d.slice(0,3)}.${d.slice(3,6)}.${d.slice(6,9)}-${d.slice(9)}`:(d||'');}
+function cpfValido(d){
+  if(!d||d.length!==11||/^(\d)\1{10}$/.test(d))return false;
+  const calc=len=>{let s=0;for(let i=0;i<len;i++)s+=Number(d[i])*(len+1-i);const r=(s*10)%11;return r===10?0:r;};
+  return calc(9)===Number(d[9])&&calc(10)===Number(d[10]);
+}
+
+// Chave da pessoa: CPF > e-mail (herda o CPF quando o mesmo e-mail aparece com CPF em outro chamado) > nome.
+function assignPersonKeys(rows){
+  const emailToCpf=new Map();
+  rows.forEach(r=>{
+    r.__cpfDigits=cpfDigits(r.__cpf);
+    r.__emailNorm=normTxt(r.__email).toLowerCase();
+    if(r.__cpfDigits&&r.__emailNorm&&!emailToCpf.has(r.__emailNorm))emailToCpf.set(r.__emailNorm,r.__cpfDigits);
+  });
+  rows.forEach(r=>{
+    let cpf=r.__cpfDigits;
+    if(!cpf&&r.__emailNorm&&emailToCpf.has(r.__emailNorm))cpf=emailToCpf.get(r.__emailNorm);
+    const nk=normKey(r.__nome);
+    r.__personKey=cpf?`cpf:${cpf}`:r.__emailNorm?`email:${r.__emailNorm}`:nk?`nome:${nk}`:'';
+    if(r.__cpfDigits)r.__search+=` ${r.__cpfDigits}`;
+  });
+}
+
+function buildRequesterRanking(rows){
+  const map=new Map();
+  const inc=(m,k)=>{if(k)m.set(k,(m.get(k)||0)+1);};
+  rows.forEach(r=>{
+    if(!r.__personKey)return;
+    let p=map.get(r.__personKey);
+    if(!p){
+      p={key:r.__personKey,rows:[],names:new Map(),emails:new Map(),problems:new Map(),owners:new Map(),
+         cpf:r.__personKey.startsWith('cpf:')?r.__personKey.slice(4):'',
+         total:0,open:0,done:0,overdue:0,high:0,first:null,last:null,lastRow:null};
+      map.set(r.__personKey,p);
+    }
+    p.rows.push(r);p.total++;
+    if(isDone(r))p.done++;else p.open++;
+    if(!isDone(r)&&r.__sla.atraso>0)p.overdue++;
+    if(isHigh(r))p.high++;
+    inc(p.names,normTxt(r.__nome));
+    inc(p.emails,r.__emailNorm);
+    inc(p.problems,r.__problem);
+    if(r.__owner&&r.__owner!=='(vazio)')inc(p.owners,r.__owner);
+    const d=parseDate(r.__data);
+    if(d){
+      if(!p.first||d<p.first)p.first=d;
+      if(!p.last||d>p.last){p.last=d;p.lastRow=r;}
+    }
+    if(!p.lastRow)p.lastRow=r;
+  });
+  const top=m=>[...m.entries()].sort((a,b)=>b[1]-a[1]||String(a[0]).localeCompare(String(b[0]),'pt-BR'));
+  const list=[...map.values()].map(p=>{
+    const names=top(p.names),emails=top(p.emails),probs=top(p.problems),owners=top(p.owners);
+    const lastEmail=p.lastRow?p.lastRow.__emailNorm:'';
+    const email=lastEmail||(emails[0]?emails[0][0]:''); // e-mail mais recente = contato mais provavel
+    return {
+      key:p.key,
+      nome:names[0]?names[0][0]:'(sem nome)',
+      cpf:p.cpf,cpfFmt:fmtCpf(p.cpf),cpfOk:p.cpf?cpfValido(p.cpf):false,
+      email,emailsAlt:emails.map(e=>e[0]).filter(e=>e!==email),
+      empresa:p.lastRow?p.lastRow.__empresa:'',
+      total:p.total,open:p.open,done:p.done,overdue:p.overdue,high:p.high,
+      topProblem:probs[0]?probs[0][0]:'',
+      problemsTxt:probs.slice(0,3).map(([l,c])=>`${l} (${c})`).join(' | '),
+      owners:owners.map(o=>o[0]).join(', '),
+      first:p.first,last:p.last,
+      lastStatus:p.lastRow?p.lastRow.__status:'',
+      rows:p.rows
+    };
+  });
+  list.sort((a,b)=>b.total-a.total||b.open-a.open||b.overdue-a.overdue||a.nome.localeCompare(b.nome,'pt-BR'));
+  list.forEach((p,i)=>{p.pos=i+1;});
+  return list;
+}
+
+// colunas da tabela de acionadores (indice 0 = checkbox)
+const REQ_COLS=[
+  {h:'',sel:true},
+  {h:'#',get:p=>p.pos,num:true},
+  {h:'Nome',get:p=>p.nome},
+  {h:'CPF',get:p=>p.cpf},
+  {h:'E-mail',get:p=>p.email},
+  {h:'Empresa',get:p=>p.empresa},
+  {h:'Chamados',get:p=>p.total,num:true},
+  {h:'Em aberto',get:p=>p.open,num:true},
+  {h:'Fora SLA',get:p=>p.overdue,num:true},
+  {h:'Alta urg.',get:p=>p.high,num:true},
+  {h:'Principal assunto',get:p=>p.topProblem},
+  {h:'Ultima abertura',get:p=>p.last?p.last.getTime():0,num:true},
+  {h:'Ultimo status',get:p=>p.lastStatus}
+];
+
+function sortReq(list){
+  const c=REQ_COLS[REQ.sort.col];
+  if(!c||!c.get)return list;
+  return [...list].sort((a,b)=>{
+    const av=c.get(a),bv=c.get(b);
+    if(c.num)return ((Number(av)||0)-(Number(bv)||0))*REQ.sort.dir||a.pos-b.pos;
+    return String(av??'').localeCompare(String(bv??''),'pt-BR',{sensitivity:'base'})*REQ.sort.dir||a.pos-b.pos;
+  });
+}
+
+function filterReq(all){
+  let list=all.filter(p=>p.total>=REQ.min);
+  if(REQ.scope==='open')list=list.filter(p=>p.open>0);
+  if(REQ.scope==='overdue')list=list.filter(p=>p.overdue>0);
+  if(REQ.scope==='nocpf')list=list.filter(p=>!p.cpf||!p.cpfOk);
+  if(REQ.search){
+    const q=normKey(REQ.search);
+    const qd=REQ.search.replace(/\D/g,'');
+    list=list.filter(p=>normKey(`${p.nome} ${p.email} ${p.emailsAlt.join(' ')} ${p.cpfFmt} ${p.empresa}`).includes(q)||(qd.length>=3&&p.cpf.includes(qd)));
+  }
+  if(REQ.top>0)list=list.slice(0,REQ.top);
+  return sortReq(list);
+}
+
+function countBadge(n,cls){return n>0?`<span class="bdg ${cls}">${n}</span>`:'<span style="color:#aaa">0</span>';}
+
+function renderRequesters(){
+  const tbl=document.getElementById('req-table');
+  if(!tbl)return;
+  REQ_ALL=buildRequesterRanking(FILT_BASE);
+  REQ_INDEX=new Map(REQ_ALL.map(p=>[p.key,p]));
+  REQ_ROWS=filterReq(REQ_ALL);
+
+  const allVisSel=REQ_ROWS.length>0&&REQ_ROWS.every(p=>REQ.sel.has(p.key));
+  tbl.querySelector('thead').innerHTML=`<tr>${REQ_COLS.map((c,i)=>{
+    if(c.sel)return `<th class="req-ck"><input type="checkbox" id="req-ck-all" title="Selecionar todos os exibidos"${allVisSel?' checked':''}></th>`;
+    const cls=['sortable',c.num?'num':'',REQ.sort.col===i?(REQ.sort.dir===1?'sort-asc':'sort-desc'):''].filter(Boolean).join(' ');
+    return `<th class="${cls}" data-col="${i}">${c.h}</th>`;
+  }).join('')}</tr>`;
+
+  tbl.querySelector('tbody').innerHTML=REQ_ROWS.map(p=>{
+    const sel=REQ.sel.has(p.key);
+    const act=activeRequester===p.key;
+    const cpfCell=p.cpf
+      ?`${esc(p.cpfFmt)}${p.cpfOk?'':' <span class="bdg er" title="Digito verificador nao confere">verificar</span>'}`
+      :'<span class="bdg blank">sem CPF</span>';
+    const mailCell=p.email
+      ?`<a href="mailto:${esc(p.email)}" title="Abrir e-mail">${esc(p.email)}</a>${p.emailsAlt.length?` <span class="bdg blank" title="${esc(p.emailsAlt.join(', '))}">+${p.emailsAlt.length}</span>`:''}`
+      :'<span class="bdg blank">sem e-mail</span>';
+    return `<tr class="${sel?'req-sel':''}${act?' req-act':''}" data-key="${esc(p.key)}">
+      <td class="req-ck"><input type="checkbox" data-key="${esc(p.key)}"${sel?' checked':''}></td>
+      <td class="num">${p.pos}</td>
+      <td><button class="link-btn req-name" data-key="${esc(p.key)}" title="Filtrar dashboard por esta pessoa">${esc(p.nome)}</button></td>
+      <td class="mono">${cpfCell}</td>
+      <td>${mailCell}</td>
+      <td>${esc(p.empresa)}</td>
+      <td class="num"><b>${p.total}</b></td>
+      <td class="num">${countBadge(p.open,'wn')}</td>
+      <td class="num">${countBadge(p.overdue,'er')}</td>
+      <td class="num">${countBadge(p.high,'alta')}</td>
+      <td class="wrap">${esc(p.topProblem)}</td>
+      <td class="num">${esc(p.last?fmtDateOnly(p.last):'')}</td>
+      <td>${statusBadge(p.lastStatus)}</td>
+    </tr>`;
+  }).join('')||`<tr><td colspan="${REQ_COLS.length}" style="color:var(--mu)">Nenhum acionador no filtro atual.</td></tr>`;
+
+  // ordenacao: 1o clique crescente, 2o decrescente
+  tbl.querySelectorAll('th.sortable').forEach(th=>{
+    th.addEventListener('click',()=>{
+      const ci=Number(th.dataset.col);
+      if(REQ.sort.col===ci)REQ.sort.dir*=-1;else{REQ.sort.col=ci;REQ.sort.dir=1;}
+      renderRequesters();
+    });
+  });
+  const ckAll=document.getElementById('req-ck-all');
+  if(ckAll)ckAll.addEventListener('change',()=>{
+    if(ckAll.checked)REQ_ROWS.forEach(p=>REQ.sel.add(p.key));
+    else REQ_ROWS.forEach(p=>REQ.sel.delete(p.key));
+    renderRequesters();
+  });
+  tbl.querySelectorAll('tbody input[type=checkbox][data-key]').forEach(ck=>{
+    ck.addEventListener('change',()=>{
+      if(ck.checked)REQ.sel.add(ck.dataset.key);else REQ.sel.delete(ck.dataset.key);
+      renderRequesters();
+    });
+  });
+  tbl.querySelectorAll('button.req-name').forEach(b=>{
+    b.addEventListener('click',e=>{e.stopPropagation();toggleRequester(b.dataset.key);});
+  });
+  tbl.querySelectorAll('tbody tr[data-key]').forEach(tr=>{
+    tr.addEventListener('dblclick',e=>{
+      if(e.target.closest('input,a,button'))return;
+      openReqModal(tr.dataset.key);
+    });
+  });
+
+  const selValid=[...REQ.sel].filter(k=>REQ_INDEX.has(k)).length;
+  const semCpf=REQ_ALL.filter(p=>!p.cpf).length;
+  const sub=document.getElementById('req-subtitle');
+  if(sub)sub.textContent=`${REQ_ROWS.length} exibido(s) de ${REQ_ALL.length} acionador(es) unico(s) em ${FILT_BASE.length} chamado(s).`
+    +(semCpf?` ${semCpf} sem CPF (agrupados por e-mail/nome).`:'')
+    +(selValid?` ${selValid} selecionado(s).`:'')
+    +' Agrupamento por CPF; respeita filtros da barra lateral e cards.';
+  const n=selValid||REQ_ROWS.length;
+  const lbl=selValid?`selecionados: ${n}`:`${n}`;
+  document.getElementById('req-export-xlsx').textContent=`Exportar contatos (Excel) · ${lbl}`;
+  document.getElementById('req-export-csv').textContent=`Exportar CSV · ${lbl}`;
+  document.getElementById('req-copy-emails').textContent=`Copiar e-mails · ${lbl}`;
+}
+
+// selecionados (se houver) senao a lista exibida — sempre na ordem do ranking
+function reqExportList(){
+  const sel=[...REQ.sel].map(k=>REQ_INDEX.get(k)).filter(Boolean);
+  const list=sel.length?sel:REQ_ROWS;
+  return [...list].sort((a,b)=>a.pos-b.pos);
+}
+
+function copyText(txt){
+  if(navigator.clipboard&&window.isSecureContext){
+    return navigator.clipboard.writeText(txt).then(()=>true).catch(()=>copyTextFallback(txt));
+  }
+  return Promise.resolve(copyTextFallback(txt));
+}
+function copyTextFallback(txt){
+  const ta=document.createElement('textarea');
+  ta.value=txt;ta.style.position='fixed';ta.style.opacity='0';
+  document.body.appendChild(ta);ta.select();
+  let ok=false;try{ok=document.execCommand('copy');}catch(_){ok=false;}
+  ta.remove();return ok;
+}
+
+function copyReqEmails(){
+  const list=reqExportList();
+  const emails=[...new Set(list.map(p=>p.email).filter(Boolean))];
+  if(!emails.length){showToast('Nenhum e-mail na lista.');return;}
+  copyText(emails.join('; ')).then(ok=>showToast(ok?`${emails.length} e-mail(s) copiado(s).`:'Nao foi possivel copiar.'));
+}
+
+const REQ_EXPORT_HEADERS=['Posicao','CPF','Nome','E-mail','Empresa','Total_Chamados','Em_Aberto','Fora_SLA','Alta_Urgencia','Concluidos','Principal_Assunto','Assuntos_Top3','Primeira_Abertura','Ultima_Abertura','Ultimo_Status','Owners','Emails_Alternativos','CPF_Somente_Numeros','CPF_Valido'];
+function reqExportRow(p){
+  return [p.pos,p.cpfFmt,p.nome,p.email,p.empresa,p.total,p.open,p.overdue,p.high,p.done,p.topProblem,p.problemsTxt,
+    p.first?fmtDateOnly(p.first):'',p.last?fmtDateOnly(p.last):'',p.lastStatus,p.owners,p.emailsAlt.join('; '),p.cpf,p.cpf?(p.cpfOk?'Sim':'Nao'):'Sem CPF'];
+}
+const REQ_TICKET_HEADERS=['CPF','Nome','E-mail','Abertura','Classificacao','Grupo','Status','SLA_Status','Atraso_Dias','Urgencia','Owner','Empresa','Tipo','Descricao','Observacao','Aba','Linha'];
+function reqTicketRows(p){
+  return [...p.rows].sort((a,b)=>String(a.__dateIso||'').localeCompare(String(b.__dateIso||''))).map(r=>[
+    p.cpfFmt,p.nome,p.email,fmtDate(r.__data),r.__problem,r.__classification.group,r.__status,r.__sla.status,r.__sla.atraso??'',
+    r.__urgencia,r.__owner,r.__empresa,r.__tipo,normTxt(r.__descricao),normTxt(r.__observacao),r.__sheet,r.__rowNumber]);
+}
+
+function csvLine(vals){return vals.map(v=>`"${String(v??'').replaceAll('"','""')}"`).join(';');}
+function todayIso(){return toIsoDate(new Date());}
+
+function exportReqCsv(){
+  const list=reqExportList();
+  if(!list.length){showToast('Nenhum acionador para exportar.');return;}
+  const lines=[REQ_EXPORT_HEADERS.join(';'),...list.map(p=>csvLine(reqExportRow(p)))];
+  dl('\ufeff'+lines.join('\r\n'),'text/csv;charset=utf-8',`maiores_acionadores_chamados_rh_${todayIso()}.csv`);
+  showToast(`${list.length} contato(s) exportado(s).`);
+}
+
+// Excel com Calibri Light 8pt em todas as celulas: usa xlsx-js-style sob demanda (sem trocar o XLSX do importador).
+let XLSX_STYLE=null;
+function loadStyledXlsx(){
+  if(XLSX_STYLE)return Promise.resolve(XLSX_STYLE);
+  return new Promise(resolve=>{
+    const base=window.XLSX;
+    const s=document.createElement('script');
+    s.src='https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js';
+    const done=lib=>{window.XLSX=base;resolve(lib);};
+    const timer=setTimeout(()=>done(null),8000);
+    s.onload=()=>{clearTimeout(timer);const lib=window.XLSX&&window.XLSX!==base?window.XLSX:null;XLSX_STYLE=lib;done(lib);};
+    s.onerror=()=>{clearTimeout(timer);done(null);};
+    document.head.appendChild(s);
+  });
+}
+
+function buildSheet(lib,aoa,widths,styled){
+  const ws=lib.utils.aoa_to_sheet(aoa);
+  ws['!cols']=widths.map(w=>({wch:w}));
+  const ref=ws['!ref'];
+  if(ref)ws['!autofilter']={ref};
+  if(styled&&ref){
+    const rg=lib.utils.decode_range(ref);
+    for(let R=rg.s.r;R<=rg.e.r;R++){
+      for(let C=rg.s.c;C<=rg.e.c;C++){
+        const addr=lib.utils.encode_cell({r:R,c:C});
+        if(!ws[addr])ws[addr]={t:'s',v:''};
+        ws[addr].s=R===0
+          ?{font:{name:'Calibri Light',sz:8,bold:true,color:{rgb:'FFFFFF'}},fill:{fgColor:{rgb:'0083CA'}},alignment:{vertical:'center'}}
+          :{font:{name:'Calibri Light',sz:8,color:{rgb:'333333'}},alignment:{vertical:'top'}};
+      }
+    }
+  }
+  return ws;
+}
+
+async function exportReqXlsx(){
+  const list=reqExportList();
+  if(!list.length){showToast('Nenhum acionador para exportar.');return;}
+  showToast('Gerando Excel...');
+  const styledLib=await loadStyledXlsx();
+  const lib=styledLib||window.XLSX;
+  if(!lib){showToast('Biblioteca Excel indisponivel — exportando CSV.');exportReqCsv();return;}
+  const styled=!!styledLib;
+  const wb=lib.utils.book_new();
+  // 1) Contatos: o essencial para acao (CPF, Nome, E-mail)
+  const contatos=[['Posicao','CPF','Nome','E-mail','Empresa','Total_Chamados','Em_Aberto','Principal_Assunto'],
+    ...list.map(p=>[p.pos,p.cpfFmt,p.nome,p.email,p.empresa,p.total,p.open,p.topProblem])];
+  lib.utils.book_append_sheet(wb,buildSheet(lib,contatos,[8,16,34,36,22,10,10,30],styled),'Contatos');
+  // 2) Detalhe consolidado por pessoa
+  lib.utils.book_append_sheet(wb,buildSheet(lib,[REQ_EXPORT_HEADERS,...list.map(reqExportRow)],
+    [8,16,34,36,22,10,10,10,10,10,30,50,12,12,22,30,36,14,10],styled),'Acionadores_Detalhe');
+  // 3) Todos os chamados dessas pessoas (para atuar caso a caso)
+  const tickets=[REQ_TICKET_HEADERS];list.forEach(p=>tickets.push(...reqTicketRows(p)));
+  lib.utils.book_append_sheet(wb,buildSheet(lib,tickets,[16,30,34,16,28,18,20,14,10,10,18,20,24,60,40,14,8],styled),'Chamados');
+  lib.writeFile(wb,`maiores_acionadores_chamados_rh_${todayIso()}.xlsx`);
+  showToast(styled?`${list.length} contato(s) exportado(s).`:`${list.length} contato(s) exportado(s) (sem formatacao: biblioteca de estilo indisponivel).`);
+}
+
+// ── MODAL (drill-down do acionador) ──
+function openReqModal(key){
+  const p=REQ_INDEX.get(key);
+  if(!p)return;
+  REQ_MODAL_KEY=key;
+  document.getElementById('req-mdl-title').textContent=`#${p.pos} · ${p.nome}`;
+  document.getElementById('req-mdl-sub').textContent=`${p.total} chamado(s) · ${p.open} em aberto · ${p.overdue} fora do SLA · ${p.high} alta urgencia`;
+  const f=(l,v)=>`<div class="mdl-f"><span>${esc(l)}</span><b>${v}</b></div>`;
+  const rows=[...p.rows].sort((a,b)=>String(a.__dateIso||'').localeCompare(String(b.__dateIso||'')));
+  document.getElementById('req-mdl-body').innerHTML=`
+    <div class="mdl-grid">
+      ${f('CPF',p.cpf?esc(p.cpfFmt)+(p.cpfOk?'':' <span class="bdg er">verificar</span>'):'<span class="bdg blank">sem CPF</span>')}
+      ${f('E-mail',p.email?`<a href="mailto:${esc(p.email)}" style="color:var(--p)">${esc(p.email)}</a>`:'—')}
+      ${f('E-mails alternativos',esc(p.emailsAlt.join(', ')||'—'))}
+      ${f('Empresa',esc(p.empresa||'—'))}
+      ${f('Periodo',esc(`${p.first?fmtDateOnly(p.first):'—'} a ${p.last?fmtDateOnly(p.last):'—'}`))}
+      ${f('Owners que atenderam',esc(p.owners||'—'))}
+      ${f('Assuntos mais frequentes',esc(p.problemsTxt||'—'))}
+    </div>
+    <div class="twrap" style="max-height:none">
+      <table>
+        <thead><tr><th>Abertura</th><th>Classificacao</th><th>Status</th><th>SLA</th><th>Urgencia</th><th>Owner</th><th>Descricao</th><th>Observacao</th></tr></thead>
+        <tbody>${rows.map(r=>`<tr>
+          <td style="white-space:nowrap">${esc(fmtDate(r.__data))}</td>
+          <td>${esc(r.__problem)}</td>
+          <td>${statusBadge(r.__status)}</td>
+          <td>${slaBadge(r)}</td>
+          <td>${urgBadge(r.__urgencia)}</td>
+          <td>${esc(r.__owner)}</td>
+          <td class="desc">${esc(r.__descricao)}</td>
+          <td class="desc">${esc(r.__observacao)}</td>
+        </tr>`).join('')}</tbody>
+      </table>
+    </div>`;
+  document.getElementById('req-mdl-filter').textContent=activeRequester===key?'Remover filtro desta pessoa':'Filtrar dashboard por esta pessoa';
+  document.getElementById('req-modal').style.display='flex';
+}
+function closeReqModal(){document.getElementById('req-modal').style.display='none';REQ_MODAL_KEY=null;}
+
+function exportReqPersonCsv(){
+  const p=REQ_INDEX.get(REQ_MODAL_KEY);if(!p)return;
+  const lines=[REQ_TICKET_HEADERS.join(';'),...reqTicketRows(p).map(csvLine)];
+  const slug=normKey(p.nome).replace(/[^a-z0-9]+/g,'_').replace(/^_|_$/g,'')||'acionador';
+  dl('\ufeff'+lines.join('\r\n'),'text/csv;charset=utf-8',`chamados_${slug}_${todayIso()}.csv`);
 }
 
 // ── GLOSSARY ──────────────────────────────────────────────────────────────
@@ -984,6 +1472,7 @@ function renderTable(){
 function renderDash(){
   renderKpis();
   renderResolverCards();
+  renderRequesters();
   renderBarList('bar-problems',countBy(FILT,r=>r.__problem),12,true);
   renderBarList('bar-status',countBy(FILT,r=>r.__status),8);
   renderBarList('bar-owner',countBy(FILT,r=>r.__owner),8);
@@ -997,6 +1486,8 @@ function renderDash(){
 function loadData(data){
   workbookData=data||{};
   ALL=enrichRows(workbookData);
+  assignPersonKeys(ALL);
+  activeRequester=null;activeRequesterLabel='';
   FILT=[...ALL];
   renderFilters();
   applyFilters();
@@ -1091,6 +1582,7 @@ function resetSession(){
   if(!confirm('Apagar dados da sessao e filtros?'))return;
   clearWb();
   ALL=[];FILT=[];workbookData={};activeKpiFilter=null;activeProbFilter='__all__';
+  activeRequester=null;activeRequesterLabel='';REQ.sel.clear();
   document.getElementById('dash').classList.remove('on');
   document.getElementById('drop-zone').style.display='';
   document.getElementById('btn-save').style.display='none';
@@ -1218,6 +1710,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     document.getElementById('f-date-to').value='';
     document.getElementById('f-search').value='';
     activeKpiFilter=null;activeProbFilter='__all__';activeResolver=null;
+    activeRequester=null;activeRequesterLabel='';
     tSort={col:null,dir:1};
     TQ.classificacao='';TQ.grupo='';TQ.sla='';TQ.confianca='';TQ.search='';
     ['tq-classificacao','tq-grupo','tq-sla','tq-confianca'].forEach(id=>{document.getElementById(id).value='';});
@@ -1237,6 +1730,27 @@ document.addEventListener('DOMContentLoaded',()=>{
     document.getElementById('tq-search').value='';
     tSort={col:null,dir:1};
     renderTable();
+  });
+
+  // maiores acionadores
+  document.getElementById('req-top').addEventListener('change',e=>{REQ.top=Number(e.target.value)||0;renderRequesters();});
+  document.getElementById('req-min').addEventListener('change',e=>{REQ.min=Number(e.target.value)||1;renderRequesters();});
+  document.getElementById('req-scope').addEventListener('change',e=>{REQ.scope=e.target.value;renderRequesters();});
+  document.getElementById('req-search').addEventListener('input',e=>{REQ.search=e.target.value;renderRequesters();});
+  document.getElementById('req-sel-clr').addEventListener('click',()=>{REQ.sel.clear();renderRequesters();});
+  document.getElementById('req-copy-emails').addEventListener('click',copyReqEmails);
+  document.getElementById('req-export-csv').addEventListener('click',exportReqCsv);
+  document.getElementById('req-export-xlsx').addEventListener('click',exportReqXlsx);
+  document.getElementById('req-mdl-close').addEventListener('click',closeReqModal);
+  document.getElementById('req-modal').addEventListener('click',e=>{if(e.target.id==='req-modal')closeReqModal();});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&REQ_MODAL_KEY)closeReqModal();});
+  document.getElementById('req-mdl-csv').addEventListener('click',exportReqPersonCsv);
+  document.getElementById('req-mdl-copy').addEventListener('click',()=>{
+    const p=REQ_INDEX.get(REQ_MODAL_KEY);if(!p)return;
+    copyText(`${p.nome}\t${p.cpfFmt}\t${p.email}`).then(ok=>showToast(ok?'Contato copiado (Nome, CPF, E-mail).':'Nao foi possivel copiar.'));
+  });
+  document.getElementById('req-mdl-filter').addEventListener('click',()=>{
+    const k=REQ_MODAL_KEY;closeReqModal();toggleRequester(k);
   });
 
   boot();
